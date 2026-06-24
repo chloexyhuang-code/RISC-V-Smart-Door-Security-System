@@ -1,123 +1,140 @@
-# RISC-V 智慧門禁安全系統
+# 1. 專題名稱
 
-## 專題簡介
+RISC-V Smart Door Security System
 
-本專題使用 Digilent Basys3 FPGA 開發板與 PicoRV32 RISC-V 處理器實作智慧門禁安全系統（Smart Door Security System）。
-
-系統採用 Memory-Mapped I/O 架構，使 CPU 能夠與 FPGA 周邊設備進行資料交換。
-
-已完成功能：
-
-- 密碼驗證
-- 錯誤偵測
-- 三次錯誤自動鎖定
-- 管理員解鎖
-- LED 狀態顯示
-- 七段顯示器結果顯示
+本專題利用 PicoRV32 RISC-V CPU 與 Basys3 FPGA 開發板實作智慧門禁安全系統，透過 Memory-Mapped I/O 控制 Switch、Button、LED 與七段顯示器，完成密碼驗證、錯誤鎖定及管理員解鎖功能。
 
 ---
 
-# 開發平台
+# 2. 使用開發板
 
-- FPGA 開發板：Digilent Basys3
-- FPGA 晶片：Xilinx Artix-7 XC7A35T
-- CPU 核心：PicoRV32 RISC-V Processor
+Digilent Basys3 FPGA Development Board
 
----
+FPGA Device：
 
-# 開發工具
-
-- Vivado 2019.1
-- riscv-none-elf-gcc 15.2.0
-- Windows PowerShell
+XC7A35T-1CPG236C
 
 ---
 
-# 專案架構
+# 3. 使用工具版本
+
+Vivado：2019.1
+
+RISC-V Toolchain：
+
+riscv-none-elf-gcc 15.2.0
+
+作業系統：
+
+Windows 11
+
+---
+
+# 4. 專案資料夾結構
 
 ```text
 RISC-V-Smart-Door-Security-System
 │
-├── firmware
-│   ├── main.c
-│   ├── start.s
-│   ├── linker.ld
-│   └── firmware.hex
+├─ firmware
+│   ├─ main.c
+│   ├─ start.s
+│   ├─ linker.ld
+│   ├─ firmware.elf
+│   ├─ firmware.bin
+│   └─ firmware.hex
 │
-├── src
-│   ├── top.v
-│   ├── door_soc.v
-│   ├── picorv32.v
-│   └── basys3.xdc
+├─ src
+│   ├─ top.v
+│   ├─ door_soc.v
+│   ├─ picorv32.v
+│   └─ basys3.xdc
 │
-└── README.md
+└─ README.md
 ```
 
 ---
 
-# Memory-Mapped I/O 位址配置
+# 5. 如何產生 Bitstream
 
-| 位址 | 功能 |
-|--------|--------|
-| 0x10000000 | INPUT_REG |
-| 0x10000004 | LED_REG |
-| 0x10000008 | SEG_REG |
+1. 開啟 Vivado 2019.1
+2. 載入專案
+3. 確認 firmware.hex 已更新
+4. 執行 Run Synthesis
+5. 執行 Run Implementation
+6. 執行 Generate Bitstream
+7. 產生 bitstream 完成
 
 ---
 
-# 如何產生 Firmware
+# 6. 如何載入或修改 RISC-V 程式
 
-## 編譯 C 程式
+修改檔案：
+
+```text
+firmware/main.c
+```
+
+編譯程式：
 
 ```bash
 riscv-none-elf-gcc -march=rv32i -mabi=ilp32 -nostdlib -T linker.ld start.s main.c -o firmware.elf
 ```
 
-## 轉換成 Binary
+產生 Binary：
 
 ```bash
 riscv-none-elf-objcopy -O binary firmware.elf firmware.bin
 ```
 
-## 轉換成 Hex 檔
+再將 firmware.bin 轉換成 firmware.hex。
 
-使用 PowerShell 將 firmware.bin 轉換為 firmware.hex。
+最後重新執行：
+
+```text
+Run Synthesis
+Run Implementation
+Generate Bitstream
+```
+
+即可更新 FPGA 中執行的 RISC-V 程式。
 
 ---
 
-# 如何產生 Bitstream
+# 7. 如何燒錄到 FPGA 開發板
 
-1. 開啟 Vivado 2019.1
-2. Run Synthesis
-3. Run Implementation
-4. Generate Bitstream
+1. 使用 USB 連接 Basys3
+2. 開啟 Vivado Hardware Manager
+3. Open Target
+4. Auto Connect
 5. Program Device
+6. 選擇產生的 bitstream
+7. 完成燒錄
 
 ---
 
-# 系統操作方式
+# 8. 如何操作與測試
 
 ## 正確密碼驗證
 
 輸入：
 
 ```text
-0101
+SW = 0101
 ```
 
-操作：
+按下：
 
 ```text
-按下 BTNC
+BTNC
 ```
 
 結果：
 
 ```text
-顯示 1
+七段顯示器顯示 1
 ```
 
-代表密碼正確。
+表示密碼正確。
 
 ---
 
@@ -126,117 +143,78 @@ riscv-none-elf-objcopy -O binary firmware.elf firmware.bin
 輸入：
 
 ```text
-0001
+SW = 0001
 ```
 
-操作：
+按下：
 
 ```text
-按下 BTNC
+BTNC
 ```
 
 結果：
 
 ```text
-顯示 E
+七段顯示器顯示 E
 ```
 
-代表密碼錯誤。
+表示密碼錯誤。
 
 ---
 
-## 系統鎖定功能
+## 三次錯誤鎖定
 
-連續輸入錯誤密碼三次：
+連續三次輸入錯誤密碼。
+
+結果：
 
 ```text
-顯示 L
+七段顯示器顯示 L
 ```
 
-代表系統已鎖定（Locked）。
+表示系統已鎖定。
 
 ---
 
-## 管理員解鎖功能
+## 管理員解鎖
 
-操作：
+按下：
 
 ```text
-按下 BTND
+BTND
 ```
 
 結果：
 
 ```text
-顯示 A
+七段顯示器顯示 A
 ```
 
-代表管理員成功解鎖（Admin Unlock）。
+表示系統解除鎖定。
 
 ---
 
-# I/O 配置
-
-## Switch
-
-| Switch | 功能 |
-|----------|----------|
-| SW0 ~ SW3 | 密碼輸入 |
-
-## Button
-
-| 按鈕 | 功能 |
-|----------|----------|
-| BTNC | 密碼確認 |
-| BTND | 管理員解鎖 |
-
-## 七段顯示器
-
-| 顯示內容 | 意義 |
-|------------|------------|
-| 1 | 密碼正確 |
-| E | 密碼錯誤 |
-| L | 系統鎖定 |
-| A | 管理員解鎖 |
-
----
-
-# 測試結果
-
-| 測試項目 | 預期結果 | 測試結果 |
-|------------|------------|------------|
-| 正確密碼驗證 | 顯示 1 | 通過 |
-| 錯誤密碼驗證 | 顯示 E | 通過 |
-| 三次錯誤鎖定 | 顯示 L | 通過 |
-| 管理員解鎖 | 顯示 A | 通過 |
-| 解鎖後重新登入 | 顯示 1 | 通過 |
-
----
-
-# 已知限制
+# 9. 已知問題
 
 目前尚未完成：
 
-- UART 事件紀錄功能
-- 密碼修改功能
-- 多使用者權限管理
+1. UART 事件紀錄功能
+2. 密碼修改功能
+3. 多使用者權限管理
+
+本專題已完成核心功能驗證，能正常執行密碼驗證、錯誤鎖定及管理員解鎖功能。
 
 ---
 
-# 使用之外部資源
+# 10. 外部來源與授權說明
 
-- PicoRV32 RISC-V CPU Core https://github.com/YosysHQ/picorv32
-- Digilent Basys3 Reference Manual 
-- RISC-V ISA Documentation
-- https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack
----
+本專題使用以下外部資源：
 
-# 作者資訊
+1. PicoRV32 RISC-V CPU Core
+   https://github.com/YosysHQ/picorv32
 
-姓名：黃心瑜
+2. Digilent Basys3 FPGA Board Reference Manual
 
-學校：元智大學
+3. RISC-V Instruction Set Architecture (ISA)
 
-系所：電機乙組
-
-課程：數位系統設計與實驗
+除 PicoRV32 CPU Core 外，其餘 Memory-Mapped I/O、門禁控制邏輯、測試流程與 FPGA 整合皆由本人完成。
