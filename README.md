@@ -214,7 +214,6 @@ BTND
    https://github.com/YosysHQ/picorv32
 
 2. Digilent Basys3 FPGA Board Reference Manual
+   https://digilent.com/reference/programmable-logic/basys-3/reference-manual?srsltid=AfmBOooHageXbk7eHVjZQ0Kzz9wqGwbiiEB96KjoQs_La3Rm1XSKaAQX
 
 3. RISC-V Instruction Set Architecture (ISA)
-
-除 PicoRV32 CPU Core 外，其餘 Memory-Mapped I/O、門禁控制邏輯、測試流程與 FPGA 整合皆由本人完成。
