@@ -1,6 +1,6 @@
 # 1. 專題名稱
 
-RISC-V Smart Door Security System(RISC-V 智慧門禁安全系統)
+RISC-V Smart Door Security System (RISC-V 智慧門禁安全系統)
 
 本專題利用 PicoRV32 RISC-V CPU 與 Basys3 FPGA 開發板實作智慧門禁安全系統，透過 Memory-Mapped I/O 控制 Switch、Button、LED 與七段顯示器，完成密碼驗證、錯誤鎖定及管理員解鎖功能。
 
