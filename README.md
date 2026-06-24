@@ -217,3 +217,4 @@ BTND
    https://digilent.com/reference/programmable-logic/basys-3/reference-manual?srsltid=AfmBOooHageXbk7eHVjZQ0Kzz9wqGwbiiEB96KjoQs_La3Rm1XSKaAQX
 
 3. RISC-V Instruction Set Architecture (ISA)
+   https://github.com/riscv/riscv-isa-manual
