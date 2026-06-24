@@ -225,10 +225,10 @@ riscv-none-elf-objcopy -O binary firmware.elf firmware.bin
 
 # 使用之外部資源
 
-- PicoRV32 RISC-V CPU Core
-- Digilent Basys3 Reference Manual
+- PicoRV32 RISC-V CPU Core https://github.com/YosysHQ/picorv32
+- Digilent Basys3 Reference Manual 
 - RISC-V ISA Documentation
-
+- https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack
 ---
 
 # 作者資訊
